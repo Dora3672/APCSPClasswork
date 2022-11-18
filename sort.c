@@ -44,7 +44,7 @@ int main(int argc, string argv[])
     //if there is not 2 command-line arguments, tell the user the right usage
     if (argc != 2)
     {
-        printf ("Usage: ./selection file_name.txt\n");
+        printf ("Usage: ./sort file_name.txt\n");
         //tell the program something went wrong
         return 1;
     }
