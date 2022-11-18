@@ -1,4 +1,5 @@
-// Dora Ding
+// Dora Ding 
+// November 18, 2022
 
 // Practice working with structs
 // Practice applying sorting algorithms
