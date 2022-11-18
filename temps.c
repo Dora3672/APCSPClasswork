@@ -87,7 +87,7 @@ void sort_cities(void)
         }
 
         // swapping the city with the max temperature with the current city
-        // variable for the current city
+        // variable for the current city (placeholder)
         avg_temp place = temps[i];
         temps[i] = temps[index];
         temps[index] = place;
