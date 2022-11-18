@@ -5,7 +5,7 @@ Timing sorting algorithm
 1. let the user to input the file that is going to be sorted in the command-line argument
 
 2. print the usage if there is not 2 comman-line arguments
-Message "Usage: ./selection file_name.txt\n"
+Message "Usage: ./sort file_name.txt\n"
   return 1
 
 3. create functions for selection, insertion and merge sort and return the time needed for sorting with that algorithm (needs the filename containing the list for sorting)
