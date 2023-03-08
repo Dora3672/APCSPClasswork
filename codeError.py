@@ -26,7 +26,6 @@ def selectWord(choice):
         word=random.choice(HardestWords)
     word=word.lower()
 
-
 # print menu
 def Menu():
     os.system('clear')
@@ -87,7 +86,7 @@ def playing():
         # ask the user for a input of letter
         getLetter()
 
-        ### EDITED! (till line 127)
+        ### EDITED! (till line 138)
         # reset
         once = True # whether a correct letter is already inputed in the correct input list or not
         appear = False # whether the letter is correct or not
@@ -115,21 +114,35 @@ def playing():
             turns -=1
             print("sorry guess again\n")
 
+        ### EDITED! (till line 138)
         # if the end of game and the word is right
-        if len(guesses) == len(word):
+        # if the word is post office, the player wins without needing to guess the space
+        if word == EasyWords[3]:
+            if len(guesses) == len(word) - 1:
+                print("you guessed correctly. Your score is...")
+                break
+        elif len(guesses) == len(word):
             print("you guessed correctly. Your score is...")
             break
+
+    # show the right answer
+    print("Answer:", word, "\n")
+
     # if incorrect
-    if len(guesses) != len(word):
+    # also check for "post office"
+    if word == EasyWords[3]:
+        if len(guesses) != len(word) - 1:
+            print("Sorry you did not guess correctly. Your score is ...")
+    elif len(guesses) != len(word):
         # show the right answer
-        print("Answer:", word, "\n")
         print("Sorry you did not guess correctly. Your score is ...")
+
 
     input("Press enter to countinue")
     # back to menu
     Menu()
 
-### EDITED! (till line 144)
+### EDITED! (till line 157)
 # while the game is playing
 # need to repeat until end
 first = True # whether it is the first run or not
