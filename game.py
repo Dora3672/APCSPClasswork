@@ -190,6 +190,7 @@ Hope you have a great game!
 
         # if the user not guessed the word correctly
         if right != len(word):
+            print("Answer:", word, "\n")
             print("Sorry, please try again!")
 
         # prompt the user to go back to the menu
