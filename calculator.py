@@ -61,6 +61,7 @@ def best():
     os.system('clear')
     # inform the user to wait to find the best modelw
     print('Loading calculator...')
+    print('Approximately one minute...')
 
     # load data
     file = open("brain_stroke.csv", 'r') # open the data file
@@ -88,9 +89,9 @@ def best():
     le.fit(data['smoking_status'])
     smokingN = le.transform(data['smoking_status'])
     '''
-    0 = formerly smoked
-    1 = never smoked
-    2 = smokes
+    1 = formerly smoked
+    2 = never smoked
+    3 = smokes
     '''
 
     # update the data sets with transformed numerical values
@@ -215,6 +216,9 @@ def best():
     else:
         model = SVR(**best['support vector regressor'][0])
 
+    # fit model
+    model.fit(x, y)
+
     # clear terminal
     os.system('clear')
 
@@ -262,12 +266,12 @@ Hope you have a great time with the calculator and have a great day!
     elif option == 2:
         # find the bmi
         bmi = calculateBMI()
-        # print the bmi
-        print(bmi)
+        # display bmi and its meaning
+        weights = bmiDisplay(bmi)
 
         store = '' # whether to store the bmi or not
         # the input needs to be either 'y' for yes or 'n' for no
-        while store.lower() != 'y' or store.lower() != 'n':
+        while store.lower() != 'y' and store.lower() != 'n':
             # ask user
             store = cs.get_string("Do you want to store your bmi? (y/n) ")
 
@@ -278,7 +282,7 @@ Hope you have a great time with the calculator and have a great day!
             # date
             date = datetime.datetime.now()
             # the new line that will appear in record
-            printline = bmi + "\t" + name + "\t" + date.strftime('%m/%d/%Y') + "\n"
+            printline = date.strftime('%m/%d/%Y') + "\t" + name + "\t" + str(bmi) + "\t" + weights + "\n"
 
             # add the bmi to the record
             # open bmiRecord.txt
@@ -293,31 +297,140 @@ Hope you have a great time with the calculator and have a great day!
     if option == 3:
         bmi = calculateBMI() # bmi of the user
 
-        hy = '' # temporary hypertension
+        g = '' # temporary gender variable
+        # the input needs to be either 'f' for female or 'm' for male
+        while g.lower() != 'f' and g.lower() != 'm':
+            # ask user
+            g = cs.get_string("Gender (f/m): ")
+        # convert to number
+        if g.lower() == 'f':
+            gender = 1 # numerical representation of user's gender
+        else:
+            gender = 0
+
+################ add restrictions to age
+        age = 0 # user's age
+        # the input needs to be either 'f' for female or 'm' for male
+        while age < 18:
+            # ask user
+            age = cs.get_int("Age: ")
+
+        hy = '' # temporary hypertension variable
         # the input needs to be either 'y' for yes or 'n' for no
-        while hy.lower() != 'y' or hy.lower() != 'n':
+        while hy.lower() != 'y' and hy.lower() != 'n':
             # ask user
             hy = cs.get_string("Do you have hypertension (y/n): ")
-        # convert to nummber
+        # convert to number
         if hy.lower() == 'y':
-            hypertension = 1
+            hypertension = 1 # numerical representation of user's hypertension status
         else:
             hypertension = 0
 
+        hd = '' # temporary heart disease variable
+        # the input needs to be either 'y' for yes or 'n' for no
+        while hd.lower() != 'y' and hd.lower() != 'n':
+            # ask user
+            hd = cs.get_string("Do you have heart disease (y/n): ")
+        # convert to number
+        if hd.lower() == 'y':
+            heartd = 1 # numerical representation of user's heart disease status
+        else:
+            heartd = 0
+
+############### add restrictions to glucose level
+        glucose = 0 # user's average glucose level
+        # the input needs to positive float
+        while glucose <= 0:
+            # ask user
+            glucose = cs.get_float("Average glucose level (mg/dL): ")
+        # make sure it is 2 decimal points
+        glucose = round(glucose, 2)
+
+        ss = '' # temporary smoking status variable
+        # the input needs to be 'formerly,' 'never' or 'smokes'
+        while ss.lower() != 'formerly' and ss.lower() != 'never' and ss.lower() != 'smokes':
+            # ask user
+            ss = cs.get_string("What is your smoking status (formerly/never/smokes): ")
+        # convert to number
+        if ss.lower() == 'formerly':
+            smoking = 1 # numerical representation of user's smoking status
+        elif ss.lower() == 'never':
+            smoking = 2
+        else:
+            smoking = 3
+
+        print('\n\n')
+
+        # store all personal info of the user into a list
+        user = {'gender':[gender], 'age':[age], 'hypertension':[hypertension], 'heart_disease':[heartd], 'avg_glucose_level':[glucose], 'bmi':[bmi], 'smoking_status':[smoking]}
+        user = pd.DataFrame(user)
+
+        # make a prediction
+        prediction = model.predict(user)
+        # apply a threshold of 0.2 to convert the predicted values to binary predictions
+        print(prediction)
+        probability = (prediction > 0.1).astype(int)
+        # pprobability estimate for each binary prediction
+        print(probability)
+
+        # display bmi
+        weights = bmiDisplay(bmi)
+        # print possibility
+        print(f"The probability of having a stroke is {estimates*100:.2f}%")
+
+        # print suggestions based on prediction
+        if estimates > 0.5:
+            print("Based on your characteristics, you have a high risk of stroke. To reduce your risk: ")
+            if user['age'] >= 65:
+                print("Consider speaking with your doctor about managing age-related conditions.")
+            if user['hypertension'] == 1:
+                print("Work with your doctor to manage your blood pressure through diet, exercise, and medication.")
+            if user['heart_disease'] == 1:
+                print("Follow a heart-healthy diet and exercise regimen, and work with your doctor to manage any underlying conditions.")
+            if user['avg_glucose_level'] > 126:
+                print("Adopt a healthy diet, exercise regularly, and work with your doctor to manage your blood sugar levels.")
+            if user['smoking_status'] != 'never':
+                print("Quit smoking immediately.")
+        else:
+            print("Based on your characteristics, you have a low risk of stroke.")
+            print("Maintain a healthy lifestyle by eating a balanced diet, engaging in regular physical activity, and avoiding smoking and excessive alcohol consumption.")
+
+        store = '' # whether to store the possibility or not
+        # the input needs to be either 'y' for yes or 'n' for no
+        while store.lower() != 'y' and store.lower() != 'n':
+            # ask user
+            store = cs.get_string("Do you want to store your brain stroke probability (y/n): ")
+
+        # if the user want to store
+        if store.lower() == 'y':
+            # ask for name
+            name = cs.get_string("Name: ")
+            # date
+            date = datetime.datetime.now()
+            # the new line that will appear in record
+            printline = date.strftime('%m/%d/%Y') + "\t" + name + "\t" + str(estimates) + "\t" + str(bmi) + "\t" + weights + "\n"
+
+            # add the probability to the record
+            # open bmiRecord.txt
+            with open("bSRecord.txt", "a") as file:
+                # add the new line
+                file.write(printline)
+
         # prompt the user to go back to the menu
-        input("Press return to go back to main menu")
+        input("\n Press return to go back to main menu")
         return False
 
 # calculate BMI
 def calculateBMI():
     im = '' # whether the user uses metric units or imperial units
-    # can only be i for imperial or m for metric and only be 1 letter
-    while im.lower() != 'i' or im.lower() != 'm':
-        im = cs.get_string('Will you enter values with metric units (cm & kg) or imperial units (ftl & bs)? (m/i): ')
+    # can only be i for imperial or m for metric
+    while im.lower() != 'i' and im.lower() != 'm':
+        im = cs.get_string('Will you enter values with metric units (cm & kg) or imperial units (ft & lbs) (m/i): ')
 
     height = 0 # the user's height
     # metric units
     if im.lower() == 'm':
+##################### add restriction to height
         # ensure the height is positive integer
         while height <= 0:
             height = cs.get_int("Height(cm): ")
@@ -330,16 +443,18 @@ def calculateBMI():
         # checking the height is entered correctly
         while True:
             # need to have both ft and in
-            while len(h.split()) != 2 and:
+            while len(h.split()) != 2:
                 h = cs.get_string("Height(ft in): ")
             terms = h.split() # split ft and in
             # ensure valid height input
-            if terms[0] > 0 and terms[1] >= 0:
+            if int(terms[0]) > 0 and int(terms[1]) >= 0:
                 break
         # conver to meters
-        height = round((terms[0] / 3.281) + (terms[1] / 39.37 ), 2)
+############################## add restriction for ft and in
+        height = round((int(terms[0]) / 3.281) + (int(terms[1]) / 39.37 ), 2)
 
     weight = 0 # the user's weight
+############################ add restriction to weight
     # ensure the weight is positive integer
     while weight <= 0:
         # metric units
@@ -352,11 +467,63 @@ def calculateBMI():
             weight = round(weight / 2.205, 2)
 
     # calculate the bmi
-    bmi  = weight / pow(height, 2)
+    bmi  = round(weight / pow(height, 2), 1)
     return bmi
 
+# display bmi and its meaning (return the weight status)
+def bmiDisplay(bmi):
+    # print bmi
+    print("\n")
+    print(bmi)
 
+    status = '' # weight status base on bmi
+    # weight status
+    if bmi < 18.5:
+        status = 'Underweight'
+    elif bmi >= 18.5 and bmi < 25:
+        status = 'Normal'
+    elif bmi >= 25 and bmi < 30:
+        status = 'Overweight'
+    elif bmi >= 30 and bmi < 35:
+        status = 'Obese'
+    else:
+        status = 'Extremely Obese'
 
+    # print weight status
+    print(status)
+
+    # print suggestion
+    if status == 'Underweight':
+        print(
+            '''
+You have a high risk for health problems such as fatigue, lower protection (immunity) against illness, muscle loss, bone loss, hair loss, and hormone problems.
+You may need to change your lifestyle to gain or maintain weight and stay healthy.
+Eat more healthy food, exercise and build muscle!
+You may need to see a doctor and do other tests to check risk for health problems to keep yourself healthy.
+
+            '''
+              )
+    elif status == 'Normal':
+        print(
+            '''
+You have a lower risk for weight-related health problems.
+Please maintain your healthy lifestyle.
+
+            '''
+            )
+    else:
+        print(
+            '''
+You have a high risk for weight-related health problems, such as high blood pressure, heart disease, stroke, arthritis or joint pain and diabetes.
+You may need to change your lifestyle to lose weight and stay healthy.
+Change to healthier diets and get regular exercise.
+You may need to see a doctor and do other tests to check risk for health problems to keep yourself healthy.
+
+            '''
+            )
+
+    # return the weight status
+    return status
 
 
 
@@ -377,3 +544,4 @@ while end == False:
 
     # run the option
     end = run(option)
+
