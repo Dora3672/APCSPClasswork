@@ -7,24 +7,24 @@ os.system('clear')
 all variables will be declared at the beginning of the program
 Menu Function will create Menu'''
 ##Lists
-HardestWords=["craziest", "Phenomenon", "Worcestershire","Sixth", "Mischievous","Draconian","Homogeneous","Laconic","Corroborate","Pragmatic"]
-InterWords=["aggressive","futuristic","imagine","religion","produce","fraudulent","Japanese","diverse","entrepreneur","acknowledgement"]
-EasyWords=["bananas", "grapes", "pharmacy", 'post office', 'apples', "cafeteria",
+HardestWords = ["craziest", "Phenomenon", "Worcestershire","Sixth", "Mischievous","Draconian","Homogeneous","Laconic","Corroborate","Pragmatic"]
+InterWords = ["aggressive","futuristic","imagine","religion","produce","fraudulent","Japanese","diverse","entrepreneur","acknowledgement"]
+EasyWords = ["bananas", "grapes", "pharmacy", 'post office', 'apples', "cafeteria",
     "papaya", 'oranges', 'towers', 'mangos', 'kiwis','house' ]
 #Variables
-word=""
-guess=""
+word = ""
+guess = ""
 #Function to select the word to guess
 def selectWord(choice):
     global word        #it is global so the change will be accepted everywhere we use word
                         # global var do not need to be returned
     if '2' in choice:
-        word=random.choice(EasyWords)
+        word = random.choice(EasyWords)
     elif '3' in choice:
-        word=random.choice(InterWords)
+        word = random.choice(InterWords)
     elif '4' in choice:
-        word=random.choice(HardestWords)
-    word=word.lower()
+        word = random.choice(HardestWords)
+    word = word.lower()
 
 # print menu
 def Menu():
@@ -55,13 +55,13 @@ def Menu():
 #Function to control your user input
 def getLetter():
     global guess
-    check=True # whether to reprompt the user for another input or not
+    check = True # whether to reprompt the user for another input or not
     while check:
         try:
-            guess=input("\nenter a letter to guess the word ")
-            if guess.isalpha() and len(guess)==1:
-                guess=guess.lower()
-                check=False
+            guess = input("\nenter a letter to guess the word ")
+            if guess.isalpha() and len(guess) == 1:
+                guess = guess.lower()
+                check = False
             else:
                 print("only one letter please")
         except ValueError:
@@ -69,19 +69,19 @@ def getLetter():
 
 #Function to control the game( in the AP will be your main function to tal about it
 def playing():
-    turns=len(word)+2 # possible error turns
-    guesses='' # correct guesses
+    turns = len(word) + 2 # possible error turns
+    guesses = '' # correct guesses
 
     # while the game is running
-    while (turns>0):
+    while (turns > 0):
         # for every letter of the target word
         for letter in word:
             # if that letter is in the list of correct guesses, print that letter
             if letter in guesses:
-                print(letter, end=" " )
+                print(letter, end = " " )
             # or else print a place-holder for the letter, indicating that it is waiting to be guessed
             else:
-                print ("_", end=" ")
+                print ("_", end = " ")
 
         # ask the user for a input of letter
         getLetter()
@@ -111,7 +111,7 @@ def playing():
         # if the input is not in the target word
         if not appear:
             # update chance
-            turns -=1
+            turns -= 1
             print("sorry guess again\n")
 
         ### EDITED! (till line 138)
@@ -142,7 +142,6 @@ def playing():
     # back to menu
     Menu()
 
-### EDITED! (till line 157)
 # while the game is playing
 # need to repeat until end
 first = True # whether it is the first run or not

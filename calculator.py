@@ -1,3 +1,5 @@
+# Final project for APCSP
+
 import cs50 as cs
 import pandas as pd
 import numpy as np
@@ -73,7 +75,7 @@ def best():
     # only want data of adults who have known information for each characteristic
     data = dataRaw[(dataRaw['age'] >= 18) & (dataRaw['smoking_status'] != 'unknown')]
     # only want gender, age, hypertension, heart_disease, avg_glucose_level, bmi, smoking_status and stroke
-    data = data.drop(['ever_married', 'work_type', 'Residence_type'], axis=1)
+    data = data.drop(['ever_married', 'work_type', 'Residence_type'], axis = 1)
 
     # numerically transformation
     # gender
@@ -119,7 +121,7 @@ def best():
                   'n_jobs': [1, 2, 4],
                   'positive': [True, False],}
     # training
-    grid = GridSearchCV(lr, param_grid, cv=5, scoring='neg_mean_absolute_error')
+    grid = GridSearchCV(lr, param_grid, cv = 5, scoring = 'neg_mean_absolute_error')
     # prediction
     grid.fit(x_train, y_train)
     # store the best performing parameters
@@ -135,7 +137,7 @@ def best():
                   'positive': [True, False],
                   'tol': [0.001, 0.005, 0.01]}
     # training
-    grid = GridSearchCV(rr, param_grid, cv=5, scoring='neg_mean_absolute_error')
+    grid = GridSearchCV(rr, param_grid, cv = 5, scoring = 'neg_mean_absolute_error')
     grid.fit(x_train, np.ravel(y_train))
     # store the best performing parameters
     best['ridge regression'] = [grid.best_params_, mean_absolute_error(y_test, grid.predict(x_test))]
@@ -154,7 +156,7 @@ def best():
                   'tol': [0.001, 0.01],
                   'warm_start': [True, False]}
     # training
-    grid = GridSearchCV(lasso, param_grid, cv=5, scoring='neg_mean_absolute_error')
+    grid = GridSearchCV(lasso, param_grid, cv = 5, scoring = 'neg_mean_absolute_error')
     grid.fit(x_train, np.ravel(y_train))
     # store the best performing parameters
     best['lasso regression'] = [grid.best_params_, mean_absolute_error(y_test, grid.predict(x_test))]
@@ -166,7 +168,7 @@ def best():
     param_grid = {'n_estimators': [50, 100, 150],
                   'max_depth': [2, 3, 4]}
     # training
-    grid = GridSearchCV(rf, param_grid, cv=5, scoring='neg_mean_absolute_error', n_jobs=-1)
+    grid = GridSearchCV(rf, param_grid, cv = 5, scoring = 'neg_mean_absolute_error', n_jobs = -1)
     grid.fit(x_train, np.ravel(y_train))
     # store the best performing parameters
     best['random forest regressor'] = [grid.best_params_, mean_absolute_error(y_test, grid.predict(x_test))]
@@ -180,7 +182,7 @@ def best():
                   'min_samples_leaf': [1, 2, 3],
                   'max_leaf_nodes': [5, 10, 15]}
     # training
-    grid = GridSearchCV(dt, param_grid, cv=5, scoring='neg_mean_absolute_error', n_jobs=-1)
+    grid = GridSearchCV(dt, param_grid, cv = 5, scoring = 'neg_mean_absolute_error', n_jobs =- 1)
     grid.fit(x_train, np.ravel(y_train))
     # store the best performing parameters
     best['decision tree regressor'] = [grid.best_params_, mean_absolute_error(y_test, grid.predict(x_test))]
@@ -192,7 +194,7 @@ def best():
     param_grid = {'C': [0.1, 1, 10, 100],
                   'epsilon': [0.01, 0.1, 1, 10]}
     # training
-    grid = GridSearchCV(sv, param_grid, cv=5, scoring='neg_mean_absolute_error', n_jobs=-1)
+    grid = GridSearchCV(sv, param_grid, cv = 5, scoring = 'neg_mean_absolute_error', n_jobs =- 1)
     grid.fit(x_train, np.ravel(y_train))
     # store the best performing parameters
     best['support vector regressor'] = [grid.best_params_, mean_absolute_error(y_test, grid.predict(x_test))]
@@ -308,7 +310,6 @@ Hope you have a great time with the calculator and have a great day!
         else:
             gender = 0
 
-################ add restrictions to age
         age = 0 # user's age
         # the input needs to be either 'f' for female or 'm' for male
         while age < 18:
@@ -337,7 +338,6 @@ Hope you have a great time with the calculator and have a great day!
         else:
             heartd = 0
 
-############### add restrictions to glucose level
         glucose = 0 # user's average glucose level
         # the input needs to positive float
         while glucose <= 0:
@@ -430,7 +430,6 @@ def calculateBMI():
     height = 0 # the user's height
     # metric units
     if im.lower() == 'm':
-##################### add restriction to height
         # ensure the height is positive integer
         while height <= 0:
             height = cs.get_int("Height(cm): ")
@@ -450,11 +449,9 @@ def calculateBMI():
             if int(terms[0]) > 0 and int(terms[1]) >= 0:
                 break
         # conver to meters
-############################## add restriction for ft and in
         height = round((int(terms[0]) / 3.281) + (int(terms[1]) / 39.37 ), 2)
 
     weight = 0 # the user's weight
-############################ add restriction to weight
     # ensure the weight is positive integer
     while weight <= 0:
         # metric units
